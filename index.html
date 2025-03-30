@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今天晚上吃什么</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFF5E6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .banner {
+            width: 100%;
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53, #FFD166, #06D6A0, #118AB2);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M30,20 Q50,10 70,20 T90,40 Q95,50 90,60 T70,80 Q50,90 30,80 T10,60 Q5,50 10,40 T30,20" fill="none" stroke="white" stroke-width="0.5" opacity="0.3"/></svg>');
+            opacity: 0.2;
+        }
+        
+        .banner h1 {
+            font-size: 4rem;
+            margin: 0;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .result {
+            font-size: 3rem;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px 0;
+            color: #FF6B6B;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            font-weight: bold;
+        }
+        
+        #startBtn {
+            background-color: #06D6A0;
+            color: white;
+        }
+        
+        #stopBtn {
+            background-color: #FF6B6B;
+            color: white;
+            display: none;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .food-item {
+            display: none;
+            animation: flash 0.1s;
+        }
+        
+        @keyframes flash {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .food-icons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .food-icon {
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 600px) {
+            .banner h1 {
+                font-size: 2.5rem;
+            }
+            
+            .result {
+                font-size: 2rem;
+                min-height: 80px;
+            }
+            
+            button {
+                padding: 12px 30px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <h1>今天晚上吃什么</h1>
+    </div>
+    
+    <div class="container">
+        <div class="result" id="result">点击开始按钮随机选择美食</div>
+        
+        <div class="buttons">
+            <button id="startBtn">开始</button>
+            <button id="stopBtn">停止</button>
+        </div>
+        
+        <div class="food-icons">
+            <div>🍔</div>
+            <div>🍕</div>
+            <div>🍣</div>
+            <div>🍜</div>
+            <div>🍲</div>
+            <div>🍛</div>
+            <div>🥗</div>
+            <div>🍝</div>
+            <div>🌮</div>
+            <div>🍤</div>
+        </div>
+    </div>
+
+    <script>
+        const foods = [
+    "石锅拌饭 🥘", "炸鸡套餐 🍗", "藜麦沙拉 🥙", "瑞士卷套餐 🍥", 
+    "韩式部队锅 🧀", "商务便当 🍱", "珍珠奶茶 🧋", "糙米饭套餐 🍚",
+    "本帮菜套餐 🥘", "马卡龙礼盒 🎀", "烤冷面 🍳", "关东煮 🍢",
+    "简餐套饭 🍚", "天妇罗套餐 🍤", "三明治套餐 🥪", "轻食谷物碗 🥑",
+    "白灼时蔬 🥬", "泡芙甜品 🧁", "曲奇饼干 🍪", "素食便当 🥦",
+    "欧式面包 🥖", "冬阴锅 🥘", "水煮蛋白餐 🥚", "煎饼套餐 🌯",
+    "水果茶 🍉", "韩式拌饭 🍚", "焗饭套餐 🧀", "蔬菜沙拉 🥗",
+    "鲜榨果汁 🍹", "香肠拼盘 🌭", "可颂套餐 🥐", "现磨豆浆 🥛",
+    "日式定食 🍱", "炒饭 🍚", "低脂鸡胸餐 🍗", "油条套餐 🥨",
+    "客家菜套餐 🥬", "奶盖茶 🧋", "蒸饺套餐 🥟", "章鱼小丸子 🐙",
+    "汉堡套餐 🍔", "牛排套餐 🥩", "慕斯蛋糕 🍰", "粗粮饭套餐 🍠",
+    "冰淇淋球 🍦", "大酱汤套餐 🥣", "西北面食 🍜", "芝士拼盘 🧀",
+    "肠粉套餐 🫓", "烧烤拼盘 🍢", "粤式小炒 🥢", "双皮奶 🥛",
+    "湖北煨汤 🍲", "云南米线 🍜", "布丁甜品 🍮", "江浙小炒 🥘",
+    "涮锅 🍲", "川菜小炒 🌶", "手抓饼 🌮", "牛油火锅 🥩",
+    "燕麦粥套餐 🥣", "炸串组合 🍡", "湘菜套餐 🌶", "饭团套餐 🍙",
+    "酸菜鱼火锅 🐟", "美式咖啡 ☕", "日式拉面 🍜", "韩式煎饼 🥞",
+    "月饼礼盒 🥮", "包子套餐 🥟", "浓汤套餐 🥣", "杨枝甘露 🥭",
+    "东北炖菜 🍲", "沙拉轻食 🥗", "刺身拼盘 🐟", "卤味拼盘 🦆",
+    "蛋挞套餐 🥧", "披萨套餐 🍕", "泰式冬阴锅 🥘", "馄饨套餐 🥟",
+    "汤面 🍜", "拌面 🍝", "养生粥品 🥣", "甜甜圈套餐 🍩",
+    "奶油蛋糕 🍰", "冒菜套餐 🥘", "串串香套餐 🍢", "意面套餐 🍝",
+    "咖啡 ☕", "鸡胸餐 🍗", "煎饼果子 🌯", "鸡蛋仔 🥚",
+    "自选麻辣烫 🌶", "炸鸡套餐 🍗", "单人小火锅 🍲", "三明治套餐 🥪",
+    "炒粉 🍝", "盖饭 🍛", "清汤涮锅 🍲", "番茄锅套餐 🍅",
+    "果蔬汁套餐 🥤", "寿司拼盘 🍣", "低脂鸡胸餐 🍗", "豆浆 🥛"
+];
+        
+        const resultEl = document.getElementById('result');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        
+        let intervalId = null;
+        let isRunning = false;
+        
+        startBtn.addEventListener('click', startRandomizing);
+        stopBtn.addEventListener('click', stopRandomizing);
+        
+        function startRandomizing() {
+            if (isRunning) return;
+            
+            isRunning = true;
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'block';
+            
+            let counter = 0;
+            intervalId = setInterval(() => {
+                resultEl.textContent = foods[counter % foods.length];
+                counter++;
+            }, 100);
+        }
+        
+        function stopRandomizing() {
+            if (!isRunning) return;
+            
+            clearInterval(intervalId);
+            isRunning = false;
+            stopBtn.style.display = 'none';
+            startBtn.style.display = 'block';
+            
+            // 随机选择一个美食
+            const randomIndex = Math.floor(Math.random() * foods.length);
+            resultEl.textContent = foods[randomIndex];
+            
+            // 添加庆祝效果
+            resultEl.style.animation = 'none';
+            void resultEl.offsetWidth; // 触发重绘
+            resultEl.style.animation = 'flash 0.5s 3';
+        }
+    </script>
+</body>
+</html>
