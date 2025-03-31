@@ -139,6 +139,111 @@
             opacity: 0.7;
         }
         
+        /* 自定义美食模块样式 */
+        .custom-food-container {
+            width: 90%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .custom-food-header {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #118AB2;
+        }
+        
+        .custom-food-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        #newFoodInput {
+            flex-grow: 1;
+            padding: 10px 15px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            outline: none;
+        }
+        
+        .add-btn, .delete-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .add-btn {
+            background-color: #06D6A0;
+            color: white;
+        }
+        
+        .delete-btn {
+            background-color: #FF6B6B;
+            color: white;
+        }
+        
+        .food-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        
+        .food-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .food-item:last-child {
+            border-bottom: none;
+        }
+        
+        .food-item button {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+        
+        .custom-food-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .use-custom-btn, .use-default-btn {
+            padding: 12px 25px;
+            font-size: 1rem;
+        }
+        
+        .use-custom-btn {
+            background-color: #118AB2;
+            color: white;
+        }
+        
+        .use-default-btn {
+            background-color: #FFD166;
+            color: #333;
+        }
+
+        /* 新增样式：当前选中的列表按钮高亮 */
+        .active-list-btn {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            border: 2px solid #fff;
+        }
+        
         @media (max-width: 600px) {
             .banner h1 {
                 font-size: 2.5rem;
@@ -152,6 +257,10 @@
             button {
                 padding: 12px 30px;
                 font-size: 1.2rem;
+            }
+            
+            .custom-food-header {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -181,46 +290,102 @@
         </div>
     </div>
 
-    <script>
-        const foods = [
-    "石锅拌饭 🥘", "炸鸡套餐 🍗", "藜麦沙拉 🥙", "瑞士卷套餐 🍥", 
-    "韩式部队锅 🧀", "商务便当 🍱", "珍珠奶茶 🧋", "糙米饭套餐 🍚",
-    "本帮菜套餐 🥘", "马卡龙礼盒 🎀", "烤冷面 🍳", "关东煮 🍢",
-    "简餐套饭 🍚", "天妇罗套餐 🍤", "三明治套餐 🥪", "轻食谷物碗 🥑",
-    "白灼时蔬 🥬", "泡芙甜品 🧁", "曲奇饼干 🍪", "素食便当 🥦",
-    "欧式面包 🥖", "冬阴锅 🥘", "水煮蛋白餐 🥚", "煎饼套餐 🌯",
-    "水果茶 🍉", "韩式拌饭 🍚", "焗饭套餐 🧀", "蔬菜沙拉 🥗",
-    "鲜榨果汁 🍹", "香肠拼盘 🌭", "可颂套餐 🥐", "现磨豆浆 🥛",
-    "日式定食 🍱", "炒饭 🍚", "低脂鸡胸餐 🍗", "油条套餐 🥨",
-    "客家菜套餐 🥬", "奶盖茶 🧋", "蒸饺套餐 🥟", "章鱼小丸子 🐙",
-    "汉堡套餐 🍔", "牛排套餐 🥩", "慕斯蛋糕 🍰", "粗粮饭套餐 🍠",
-    "冰淇淋球 🍦", "大酱汤套餐 🥣", "西北面食 🍜", "芝士拼盘 🧀",
-    "肠粉套餐 🫓", "烧烤拼盘 🍢", "粤式小炒 🥢", "双皮奶 🥛",
-    "湖北煨汤 🍲", "云南米线 🍜", "布丁甜品 🍮", "江浙小炒 🥘",
-    "涮锅 🍲", "川菜小炒 🌶", "手抓饼 🌮", "牛油火锅 🥩",
-    "燕麦粥套餐 🥣", "炸串组合 🍡", "湘菜套餐 🌶", "饭团套餐 🍙",
-    "酸菜鱼火锅 🐟", "美式咖啡 ☕", "日式拉面 🍜", "韩式煎饼 🥞",
-    "月饼礼盒 🥮", "包子套餐 🥟", "浓汤套餐 🥣", "杨枝甘露 🥭",
-    "东北炖菜 🍲", "沙拉轻食 🥗", "刺身拼盘 🐟", "卤味拼盘 🦆",
-    "蛋挞套餐 🥧", "披萨套餐 🍕", "泰式冬阴锅 🥘", "馄饨套餐 🥟",
-    "汤面 🍜", "拌面 🍝", "养生粥品 🥣", "甜甜圈套餐 🍩",
-    "奶油蛋糕 🍰", "冒菜套餐 🥘", "串串香套餐 🍢", "意面套餐 🍝",
-    "咖啡 ☕", "鸡胸餐 🍗", "煎饼果子 🌯", "鸡蛋仔 🥚",
-    "自选麻辣烫 🌶", "炸鸡套餐 🍗", "单人小火锅 🍲", "三明治套餐 🥪",
-    "炒粉 🍝", "盖饭 🍛", "清汤涮锅 🍲", "番茄锅套餐 🍅",
-    "果蔬汁套餐 🥤", "寿司拼盘 🍣", "低脂鸡胸餐 🍗", "豆浆 🥛"
-];
+    <!-- 新增的自定义美食模块 -->
+    <div class="custom-food-container">
+        <div class="custom-food-header">美食选项列表</div>
+        <div class="custom-food-buttons">
+            <button class="use-custom-btn" id="useCustomBtn">使用自定义美食</button>
+            <button class="use-default-btn active-list-btn" id="useDefaultBtn">使用默认美食</button>
+        </div>
+        <br>
+
+        <!-- 添加新美食的控件 -->
+        <div class="custom-food-controls">
+            <input type="text" id="newFoodInput" placeholder="输入自定义美食名称，可加表情符号...">
+            <button class="add-btn" id="addFoodBtn">添加</button>
+            <button class="delete-btn" id="clearFoodsBtn">清空</button>
+        </div>
         
+        <!-- 美食列表展示区域 -->
+        <div class="food-list" id="foodList"></div>
+    </div>
+
+    <script>
+        // 默认美食列表
+        const defaultFoods = [
+            "石锅拌饭 🥘", "炸鸡套餐 🍗", "藜麦沙拉 🥙", "瑞士卷套餐 🍥", 
+            "韩式部队锅 🧀", "商务便当 🍱", "珍珠奶茶 🧋", "糙米饭套餐 🍚",
+            "本帮菜套餐 🥘", "马卡龙礼盒 🎀", "烤冷面 🍳", "关东煮 🍢",
+            "简餐套饭 🍚", "天妇罗套餐 🍤", "三明治套餐 🥪", "轻食谷物碗 🥑",
+            "白灼时蔬 🥬", "泡芙甜品 🧁", "曲奇饼干 🍪", "素食便当 🥦",
+            "欧式面包 🥖", "冬阴锅 🥘", "水煮蛋白餐 🥚", "煎饼套餐 🌯",
+            "水果茶 🍉", "韩式拌饭 🍚", "焗饭套餐 🧀", "蔬菜沙拉 🥗",
+            "鲜榨果汁 🍹", "香肠拼盘 🌭", "可颂套餐 🥐", "现磨豆浆 🥛",
+            "日式定食 �", "炒饭 🍚", "低脂鸡胸餐 🍗", "油条套餐 🥨",
+            "客家菜套餐 🥬", "奶盖茶 🧋", "蒸饺套餐 🥟", "章鱼小丸子 🐙",
+            "汉堡套餐 🍔", "牛排套餐 🥩", "慕斯蛋糕 🍰", "粗粮饭套餐 🍠",
+            "冰淇淋球 🍦", "大酱汤套餐 🥣", "西北面食 🍜", "芝士拼盘 🧀",
+            "肠粉套餐 🫓", "烧烤拼盘 🍢", "粤式小炒 🥢", "双皮奶 🥛",
+            "湖北煨汤 🍲", "云南米线 🍜", "布丁甜品 🍮", "江浙小炒 🥘",
+            "涮锅 🍲", "川菜小炒 🌶", "手抓饼 🌮", "牛油火锅 🥩",
+            "燕麦粥套餐 🥣", "炸串组合 🍡", "湘菜套餐 🌶", "饭团套餐 🍙",
+            "酸菜鱼火锅 🐟", "美式咖啡 ☕", "日式拉面 🍜", "韩式煎饼 🥞",
+            "月饼礼盒 🥮", "包子套餐 🥟", "浓汤套餐 🥣", "杨枝甘露 🥭",
+            "东北炖菜 🍲", "沙拉轻食 🥗", "刺身拼盘 🐟", "卤味拼盘 🦆",
+            "蛋挞套餐 🥧", "披萨套餐 🍕", "泰式冬阴锅 🥘", "馄饨套餐 🥟",
+            "汤面 🍜", "拌面 🍝", "养生粥品 🥣", "甜甜圈套餐 🍩",
+            "奶油蛋糕 🍰", "冒菜套餐 🥘", "串串香套餐 🍢", "意面套餐 🍝",
+            "咖啡 ☕", "鸡胸餐 🍗", "煎饼果子 🌯", "鸡蛋仔 🥚",
+            "自选麻辣烫 🌶", "炸鸡套餐 🍗", "单人小火锅 🍲", "三明治套餐 🥪",
+            "炒粉 🍝", "盖饭 🍛", "清汤涮锅 🍲", "番茄锅套餐 🍅",
+            "果蔬汁套餐 🥤", "寿司拼盘 🍣", "低脂鸡胸餐 🍗", "豆浆 🥛"
+        ];
+        
+        // 当前使用的美食列表
+        let currentFoods = [...defaultFoods];
+        // 当前使用的列表类型（'default' 或 'custom'）
+        let currentListType = 'default';
+        
+        // 获取DOM元素
         const resultEl = document.getElementById('result');
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
+        const addFoodBtn = document.getElementById('addFoodBtn');
+        const clearFoodsBtn = document.getElementById('clearFoodsBtn');
+        const newFoodInput = document.getElementById('newFoodInput');
+        const foodListEl = document.getElementById('foodList');
+        const useCustomBtn = document.getElementById('useCustomBtn');
+        const useDefaultBtn = document.getElementById('useDefaultBtn');
         
         let intervalId = null;
         let isRunning = false;
         
-        startBtn.addEventListener('click', startRandomizing);
-        stopBtn.addEventListener('click', stopRandomizing);
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始时不加载自定义美食，只显示默认美食
+            currentFoods = [...defaultFoods];
+            currentListType = 'default';
+            
+            // 渲染美食列表
+            renderFoodList();
+            
+            // 添加事件监听器
+            startBtn.addEventListener('click', startRandomizing);
+            stopBtn.addEventListener('click', stopRandomizing);
+            addFoodBtn.addEventListener('click', addNewFood);
+            clearFoodsBtn.addEventListener('click', clearFoods);
+            useCustomBtn.addEventListener('click', useCustomFoods);
+            useDefaultBtn.addEventListener('click', useDefaultFoods);
+            
+            // 允许按回车键添加美食
+            newFoodInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addNewFood();
+                }
+            });
+        });
         
+        // 开始随机选择
         function startRandomizing() {
             if (isRunning) return;
             
@@ -230,11 +395,12 @@
             
             let counter = 0;
             intervalId = setInterval(() => {
-                resultEl.textContent = foods[counter % foods.length];
+                resultEl.textContent = currentFoods[counter % currentFoods.length];
                 counter++;
             }, 100);
         }
         
+        // 停止随机选择
         function stopRandomizing() {
             if (!isRunning) return;
             
@@ -244,13 +410,137 @@
             startBtn.style.display = 'block';
             
             // 随机选择一个美食
-            const randomIndex = Math.floor(Math.random() * foods.length);
-            resultEl.textContent = foods[randomIndex];
+            const randomIndex = Math.floor(Math.random() * currentFoods.length);
+            resultEl.textContent = currentFoods[randomIndex];
             
             // 添加庆祝效果
             resultEl.style.animation = 'none';
             void resultEl.offsetWidth; // 触发重绘
             resultEl.style.animation = 'flash 0.5s 3';
+        }
+        
+        // 添加新美食
+        function addNewFood() {
+            const newFood = newFoodInput.value.trim();
+            if (newFood) {
+                // 添加到当前显示的美食列表
+                currentFoods.push(newFood);
+                // 保存到本地存储
+                saveCustomFoods();
+                // 重新渲染列表
+                renderFoodList();
+                // 清空输入框
+                newFoodInput.value = '';
+            }
+        }
+        
+        // 清空自定义美食列表
+        function clearFoods() {
+            if (confirm('确定要清空所有自定义美食吗？')) {
+                // 根据当前列表类型决定清空后的内容
+                if (currentListType === 'custom') {
+                    currentFoods = [];
+                } else {
+                    currentFoods = [...defaultFoods];
+                }
+                saveCustomFoods();
+                renderFoodList();
+            }
+        }
+        
+        // 使用自定义美食列表
+        function useCustomFoods() {
+            // 获取自定义美食列表（仅用户添加的美食）
+            const customFoods = getCustomFoods();
+            currentFoods = [...customFoods];
+            currentListType = 'custom';
+            
+            // 更新按钮高亮状态
+            updateButtonActiveState();
+            
+            // 重新渲染列表以显示更新后的美食列表
+            renderFoodList();
+            alert(`已切换到自定义美食列表，共 ${currentFoods.length} 个选项`);
+        }
+        
+        // 使用默认美食列表
+        function useDefaultFoods() {
+            currentFoods = [...defaultFoods];
+            currentListType = 'default';
+            
+            // 更新按钮高亮状态
+            updateButtonActiveState();
+            
+            // 重新渲染列表以显示默认美食列表
+            renderFoodList();
+            alert(`已切换到默认美食列表，共 ${currentFoods.length} 个选项`);
+        }
+        
+        // 更新按钮高亮状态
+        function updateButtonActiveState() {
+            if (currentListType === 'default') {
+                useDefaultBtn.classList.add('active-list-btn');
+                useCustomBtn.classList.remove('active-list-btn');
+            } else {
+                useCustomBtn.classList.add('active-list-btn');
+                useDefaultBtn.classList.remove('active-list-btn');
+            }
+        }
+        
+        // 渲染美食列表
+        function renderFoodList() {
+            foodListEl.innerHTML = '';
+            
+            if (currentFoods.length === 0) {
+                // 如果列表为空，显示提示信息
+                const emptyMsg = document.createElement('div');
+                emptyMsg.textContent = currentListType === 'custom' ? 
+                    '您的自定义美食列表为空，请添加美食' : 
+                    '默认美食列表为空';
+                emptyMsg.style.textAlign = 'center';
+                emptyMsg.style.padding = '20px';
+                emptyMsg.style.color = '#888';
+                foodListEl.appendChild(emptyMsg);
+            } else {
+                // 显示美食列表
+                currentFoods.forEach((food, index) => {
+                    const foodItem = document.createElement('div');
+                    foodItem.className = 'food-item';
+                    foodItem.innerHTML = `
+                        <span>${food}</span>
+                        <button class="delete-btn" data-index="${index}">删除</button>
+                    `;
+                    foodListEl.appendChild(foodItem);
+                });
+                
+                // 为删除按钮添加事件监听器
+                document.querySelectorAll('.food-item button').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        currentFoods.splice(index, 1);
+                        saveCustomFoods();
+                        renderFoodList();
+                    });
+                });
+            }
+        }
+        
+        // 保存自定义美食到本地存储
+        function saveCustomFoods() {
+            // 只保存用户添加的美食（排除默认美食）
+            const customFoods = currentListType === 'custom' ? 
+                [...currentFoods] : 
+                currentFoods.filter(food => !defaultFoods.includes(food));
+            localStorage.setItem('customFoods', JSON.stringify(customFoods));
+        }
+        
+        // 获取自定义美食列表（仅用户添加的美食）
+        function getCustomFoods() {
+            const savedFoods = localStorage.getItem('customFoods');
+            if (savedFoods) {
+                return JSON.parse(savedFoods);
+            }
+            return [];
         }
     </script>
 </body>
